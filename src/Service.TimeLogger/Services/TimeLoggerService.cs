@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MyJetWallet.Sdk.Service.Tools;
+using Newtonsoft.Json;
 using Service.Core.Client.Models;
 using Service.ServerKeyValue.Grpc;
 using Service.ServerKeyValue.Grpc.Models;
@@ -12,6 +13,7 @@ using Service.TimeLogger.Domain.Models;
 using Service.TimeLogger.Grpc;
 using Service.TimeLogger.Grpc.Models;
 using Service.TimeLogger.Models;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Service.TimeLogger.Services
 {
@@ -29,7 +31,9 @@ namespace Service.TimeLogger.Services
 		{
 			_logger = logger;
 			_serverKeyValueService = serverKeyValueService;
+			
 			_timeLogHashService = timeLogHashService;
+			_timeLogHashService.SetTimeOut(Program.ReloadedSettings(model => model.HashExpiresMinutes).Invoke());
 
 			_timer = new MyTaskTimer(typeof (TimeLoggerService), GetDuration(), logger, TimerAction);
 			_timer.Start();
@@ -37,6 +41,8 @@ namespace Service.TimeLogger.Services
 
 		private async Task TimerAction()
 		{
+			_logger.LogDebug("TimeLoggerService TimerAction invoked!");
+
 			TimeLogHashRecord[] hashRecords = _timeLogHashService.CutExpired();
 
 			await SaveTimeValues(hashRecords);
@@ -44,8 +50,10 @@ namespace Service.TimeLogger.Services
 			_timer.ChangeInterval(GetDuration());
 		}
 
-		private async Task SaveTimeValues(IEnumerable<TimeLogHashRecord> hashRecords)
+		private async Task SaveTimeValues(TimeLogHashRecord[] hashRecords)
 		{
+			_logger.LogDebug("Queue has {count} items, processing...", hashRecords.Length);
+
 			foreach (TimeLogHashRecord info in hashRecords)
 			{
 				Guid? userId = info.UserId;
@@ -60,6 +68,8 @@ namespace Service.TimeLogger.Services
 
 				UpdateTimeDto(timeDto, info);
 				UpdateDayTimeDto(dayTimeDto, info);
+
+				_logger.LogDebug("Update timeDto: {timeDto}, dayTimeDto: {dayTimeDto}", JsonConvert.SerializeObject(timeDto), JsonConvert.SerializeObject(dayTimeDto));
 
 				await SetData(userId, timeDto, dayTimeDto);
 			}
@@ -137,6 +147,8 @@ namespace Service.TimeLogger.Services
 
 		public async void Dispose()
 		{
+			_logger.LogDebug("TimeLoggerService Dispose invoked!");
+
 			_timer?.Dispose();
 
 			TimeLogHashRecord[] hashRecords = _timeLogHashService.CutAll();
