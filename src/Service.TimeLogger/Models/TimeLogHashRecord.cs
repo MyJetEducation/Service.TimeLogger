@@ -18,6 +18,6 @@ namespace Service.TimeLogger.Models
 
 		public TimeSpan GetValue() => EndDateTime.Subtract(StartDateTime);
 
-		public TimeSpan GetTodayValue() => EndDateTime.Date.Subtract(StartDateTime.Date < EndDateTime.Date ? DateTime.UtcNow.Date : StartDateTime);
+		public TimeSpan GetTodayValue() => EndDateTime.Subtract(StartDateTime.Date < EndDateTime.Date ? EndDateTime.Date : StartDateTime);
 	}
 }
