@@ -90,11 +90,16 @@ namespace Service.TimeLogger.Services
 
 		private static TDto GetDto<TDto>(Func<string> keyFunc, IEnumerable<KeyValueGrpcModel> grpcModels) where TDto : new()
 		{
-			string value = grpcModels.FirstOrDefault(model => model.Key == keyFunc.Invoke())?.Value;
-			if (value == null)
-				return new TDto();
-
-			return JsonSerializer.Deserialize<TDto>(value) ?? new TDto();
+			string value = grpcModels?.FirstOrDefault(model => model.Key == keyFunc.Invoke())?.Value;
+			
+			if (value != null)
+			{
+				var dto = JsonSerializer.Deserialize<TDto>(value);
+				if (dto != null)
+					return dto;
+			}
+			
+			return new TDto();
 		}
 
 		private async Task<ItemsGrpcResponse> GetData(Guid? userId)
