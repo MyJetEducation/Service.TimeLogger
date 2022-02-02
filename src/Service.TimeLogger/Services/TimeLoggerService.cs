@@ -17,7 +17,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Service.TimeLogger.Services
 {
-	public class TimeLoggerService : ITimeLoggerService//, IDisposable
+	public class TimeLoggerService : ITimeLoggerService, IDisposable
 	{
 		private static Func<string> KeyUserTime => Program.ReloadedSettings(model => model.KeyUserTime);
 		private static Func<string> KeyUserDayTime => Program.ReloadedSettings(model => model.KeyUserDayTime);
@@ -45,8 +45,11 @@ namespace Service.TimeLogger.Services
 		private async Task TimerAction()
 		{
 			_logger.LogDebug("TimeLoggerService TimerAction invoked!");
+			_logger.LogDebug($"Queue length: {_timeLogHashService.Length()}");
 
 			TimeLogHashRecord[] hashRecords = _timeLogHashService.CutExpired();
+
+			_logger.LogDebug("Cutted {count} items, processing...", hashRecords.Length);
 
 			await SaveTimeValues(hashRecords);
 
@@ -55,8 +58,6 @@ namespace Service.TimeLogger.Services
 
 		private async Task SaveTimeValues(TimeLogHashRecord[] hashRecords)
 		{
-			_logger.LogDebug("Queue has {count} items, processing...", hashRecords.Length);
-
 			foreach (TimeLogHashRecord info in hashRecords)
 			{
 				Guid? userId = info.UserId;
@@ -153,16 +154,18 @@ namespace Service.TimeLogger.Services
 				_timeLogHashService.Update(request.UserId, request.StartDate);
 		}
 
-		//public async void Dispose()
-		//{
-		//	_logger.LogDebug("TimeLoggerService Dispose invoked!");
+		public async void Dispose()
+		{
+			_logger.LogDebug("TimeLoggerService Dispose invoked!");
 
-		//	_timer?.Dispose();
+			_timer?.Dispose();
 
-		//	TimeLogHashRecord[] hashRecords = _timeLogHashService.CutAll();
+			TimeLogHashRecord[] hashRecords = _timeLogHashService.CutAll();
 
-		//	await SaveTimeValues(hashRecords);
-		//}
+			_logger.LogDebug("Finalize {count} items, processing...", hashRecords.Length);
+
+			await SaveTimeValues(hashRecords);
+		}
 
 		private static TimeSpan GetDuration() => TimeSpan.FromMinutes(Program.ReloadedSettings(model => model.CheckHasDurationMinutes).Invoke());
 	}

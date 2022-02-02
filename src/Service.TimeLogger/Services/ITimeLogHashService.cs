@@ -12,5 +12,7 @@ namespace Service.TimeLogger.Services
 		TimeLogHashRecord[] CutExpired();
 		
 		TimeLogHashRecord[] CutAll();
+
+		int Length();
 	}
 }

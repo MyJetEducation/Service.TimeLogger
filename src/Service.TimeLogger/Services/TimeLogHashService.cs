@@ -49,5 +49,7 @@ namespace Service.TimeLogger.Services
 
 			return pairs;
 		}
+
+		public int Length() => Dictionary.Count;
 	}
 }
