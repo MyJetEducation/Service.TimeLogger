@@ -30,6 +30,7 @@ namespace Service.TimeLogger.Services
 			_logger = logger;
 			_serverKeyValueService = serverKeyValueService;
 			_timeLogHashService = timeLogHashService;
+
 			_timer = new MyTaskTimer(typeof (TimeLoggerService), GetDuration(), logger, TimerAction);
 			_timer.Start();
 		}

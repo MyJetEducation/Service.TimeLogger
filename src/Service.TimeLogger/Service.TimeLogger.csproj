@@ -20,18 +20,13 @@
     <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.22" />
+    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.20" />
     <PackageReference Include="MyJetWallet.Sdk.Service" Version="2.1.6" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="prometheus-net.AspNetCore" Version="5.0.2" />
-    <PackageReference Include="SimpleTrading.BaseMetrics" Version="1.0.3" />
     <PackageReference Include="SimpleTrading.ServiceStatusReporterConnector" Version="1.0.9" />
-    <PackageReference Include="MySettingsReader" Version="1.2.1" />
     <PackageReference Include="MyJetEducation.Service.ServerKeyValue.Client" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Service.TimeLogger.Domain\Service.TimeLogger.Domain.csproj" />
     <ProjectReference Include="..\Service.TimeLogger.Grpc\Service.TimeLogger.Grpc.csproj" />
   </ItemGroup>
 
