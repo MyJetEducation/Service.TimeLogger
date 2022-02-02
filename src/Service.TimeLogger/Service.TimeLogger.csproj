@@ -20,7 +20,7 @@
     <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.20" />
+    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.22" />
     <PackageReference Include="MyJetWallet.Sdk.Service" Version="2.1.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="5.0.2" />

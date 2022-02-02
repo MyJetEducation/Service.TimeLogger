@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.20" />
+    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.22" />
   </ItemGroup>
 
 </Project>
