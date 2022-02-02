@@ -156,6 +156,6 @@ namespace Service.TimeLogger.Services
 			await SaveTimeValues(hashRecords);
 		}
 
-		private static TimeSpan GetDuration() => TimeSpan.FromSeconds(Program.ReloadedSettings(model => model.CheckHasDurationMinutes).Invoke());
+		private static TimeSpan GetDuration() => TimeSpan.FromMinutes(Program.ReloadedSettings(model => model.CheckHasDurationMinutes).Invoke());
 	}
 }
