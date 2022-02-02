@@ -22,9 +22,11 @@ namespace Service.TimeLogger.Services
 
 		public void Update(Guid userId, DateTime startDate)
 		{
-			TimeLogHashRecord record = Dictionary.GetOrAdd(userId, _ => new TimeLogHashRecord(userId, startDate));
+			DateTime endDateTime = _systemClock.Now;
 
-			record.EndDateTime = _systemClock.Now;
+			TimeLogHashRecord record = Dictionary.GetOrAdd(userId, _ => new TimeLogHashRecord(userId, endDateTime));
+
+			record.EndDateTime = endDateTime;
 		}
 
 		public TimeLogHashRecord[] CutExpired()
