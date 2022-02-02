@@ -17,7 +17,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Service.TimeLogger.Services
 {
-	public class TimeLoggerService : ITimeLoggerService, IDisposable
+	public class TimeLoggerService : ITimeLoggerService//, IDisposable
 	{
 		private static Func<string> KeyUserTime => Program.ReloadedSettings(model => model.KeyUserTime);
 		private static Func<string> KeyUserDayTime => Program.ReloadedSettings(model => model.KeyUserDayTime);
@@ -30,6 +30,9 @@ namespace Service.TimeLogger.Services
 		public TimeLoggerService(ILogger<TimeLoggerService> logger, IServerKeyValueService serverKeyValueService, ITimeLogHashService timeLogHashService)
 		{
 			_logger = logger;
+
+			logger.LogDebug("ctor");
+
 			_serverKeyValueService = serverKeyValueService;
 			
 			_timeLogHashService = timeLogHashService;
@@ -150,16 +153,16 @@ namespace Service.TimeLogger.Services
 				_timeLogHashService.Update(request.UserId, request.StartDate);
 		}
 
-		public async void Dispose()
-		{
-			_logger.LogDebug("TimeLoggerService Dispose invoked!");
+		//public async void Dispose()
+		//{
+		//	_logger.LogDebug("TimeLoggerService Dispose invoked!");
 
-			_timer?.Dispose();
+		//	_timer?.Dispose();
 
-			TimeLogHashRecord[] hashRecords = _timeLogHashService.CutAll();
+		//	TimeLogHashRecord[] hashRecords = _timeLogHashService.CutAll();
 
-			await SaveTimeValues(hashRecords);
-		}
+		//	await SaveTimeValues(hashRecords);
+		//}
 
 		private static TimeSpan GetDuration() => TimeSpan.FromMinutes(Program.ReloadedSettings(model => model.CheckHasDurationMinutes).Invoke());
 	}
