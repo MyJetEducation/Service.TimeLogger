@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using MyJetWallet.Sdk.Service.Tools;
 using Newtonsoft.Json;
+using Service.Core.Client.Extensions;
 using Service.Core.Client.Models;
 using Service.ServerKeyValue.Grpc;
 using Service.ServerKeyValue.Grpc.Models;
@@ -17,7 +16,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Service.TimeLogger.Services
 {
-	public class TimeLoggerService : ITimeLoggerService, IDisposable
+	public class TimeLoggerService : ITimeLoggerService
 	{
 		private static Func<string> KeyUserTime => Program.ReloadedSettings(model => model.KeyUserTime);
 		private static Func<string> KeyUserDayTime => Program.ReloadedSettings(model => model.KeyUserDayTime);
@@ -25,39 +24,30 @@ namespace Service.TimeLogger.Services
 		private readonly ILogger<TimeLoggerService> _logger;
 		private readonly IServerKeyValueService _serverKeyValueService;
 		private readonly ITimeLogHashService _timeLogHashService;
-		private readonly MyTaskTimer _timer;
 
 		public TimeLoggerService(ILogger<TimeLoggerService> logger, IServerKeyValueService serverKeyValueService, ITimeLogHashService timeLogHashService)
 		{
 			_logger = logger;
-
-			logger.LogDebug("ctor");
-
 			_serverKeyValueService = serverKeyValueService;
-			
 			_timeLogHashService = timeLogHashService;
-			_timeLogHashService.SetTimeOut(Program.ReloadedSettings(model => model.HashExpiresMinutes).Invoke());
-
-			_timer = new MyTaskTimer(typeof (TimeLoggerService), GetDuration(), logger, TimerAction);
-			_timer.Start();
 		}
 
-		private async Task TimerAction()
+		public async void ProcessRequests(TimeLogGrpcRequest[] requests)
 		{
-			_logger.LogDebug("TimeLoggerService TimerAction invoked!");
-			_logger.LogDebug($"Queue length: {_timeLogHashService.Length()}");
+			foreach (TimeLogGrpcRequest request in requests)
+				_timeLogHashService.UpdateNew(request.UserId, request.StartDate);
 
-			TimeLogHashRecord[] hashRecords = _timeLogHashService.CutExpired();
-
-			_logger.LogDebug("Cutted {count} items, processing...", hashRecords.Length);
-
-			await SaveTimeValues(hashRecords);
-
-			_timer.ChangeInterval(GetDuration());
+			await SaveTimeValues();
 		}
 
-		private async Task SaveTimeValues(TimeLogHashRecord[] hashRecords)
+		private async Task SaveTimeValues()
 		{
+			TimeLogHashRecord[] hashRecords = _timeLogHashService.GetExpired();
+			if (hashRecords.IsNullOrEmpty())
+				return;
+
+			_logger.LogDebug("Retrieved {count} expired items, processing...", hashRecords.Length);
+
 			foreach (TimeLogHashRecord info in hashRecords)
 			{
 				Guid? userId = info.UserId;
@@ -73,7 +63,7 @@ namespace Service.TimeLogger.Services
 				UpdateTimeDto(timeDto, info);
 				UpdateDayTimeDto(dayTimeDto, info);
 
-				_logger.LogDebug("Update timeDto: {timeDto}, dayTimeDto: {dayTimeDto}", JsonConvert.SerializeObject(timeDto), JsonConvert.SerializeObject(dayTimeDto));
+				_logger.LogDebug($"Update timeDto: {JsonConvert.SerializeObject(timeDto)}, dayTimeDto: {JsonConvert.SerializeObject(dayTimeDto)}");
 
 				await SetData(userId, timeDto, dayTimeDto);
 			}
@@ -95,14 +85,14 @@ namespace Service.TimeLogger.Services
 		private static TDto GetDto<TDto>(Func<string> keyFunc, IEnumerable<KeyValueGrpcModel> grpcModels) where TDto : new()
 		{
 			string value = grpcModels?.FirstOrDefault(model => model.Key == keyFunc.Invoke())?.Value;
-			
+
 			if (value != null)
 			{
 				var dto = JsonSerializer.Deserialize<TDto>(value);
 				if (dto != null)
 					return dto;
 			}
-			
+
 			return new TDto();
 		}
 
@@ -147,26 +137,5 @@ namespace Service.TimeLogger.Services
 			if (response?.IsSuccess != true)
 				_logger.LogError("Can't set server key values for user {user}", userId);
 		}
-
-		public void ProcessRequests(TimeLogGrpcRequest[] requests)
-		{
-			foreach (TimeLogGrpcRequest request in requests)
-				_timeLogHashService.Update(request.UserId, request.StartDate);
-		}
-
-		public async void Dispose()
-		{
-			_logger.LogDebug("TimeLoggerService Dispose invoked!");
-
-			_timer?.Dispose();
-
-			TimeLogHashRecord[] hashRecords = _timeLogHashService.CutAll();
-
-			_logger.LogDebug("Finalize {count} items, processing...", hashRecords.Length);
-
-			await SaveTimeValues(hashRecords);
-		}
-
-		private static TimeSpan GetDuration() => TimeSpan.FromMinutes(Program.ReloadedSettings(model => model.CheckHasDurationMinutes).Invoke());
 	}
 }

@@ -5,14 +5,8 @@ namespace Service.TimeLogger.Services
 {
 	public interface ITimeLogHashService
 	{
-		void SetTimeOut(int timeoutMinutes);
+		void UpdateNew(Guid userId, DateTime startDate);
 
-		void Update(Guid userId, DateTime startDate);
-
-		TimeLogHashRecord[] CutExpired();
-		
-		TimeLogHashRecord[] CutAll();
-
-		int Length();
+		TimeLogHashRecord[] GetExpired();
 	}
 }

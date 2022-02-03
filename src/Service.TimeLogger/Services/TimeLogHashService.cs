@@ -12,15 +12,12 @@ namespace Service.TimeLogger.Services
 		private readonly ISystemClock _systemClock;
 
 		private static readonly ConcurrentDictionary<Guid, TimeLogHashRecord> Dictionary;
-		private static int _hashLiveTime;
 
 		static TimeLogHashService() => Dictionary = new ConcurrentDictionary<Guid, TimeLogHashRecord>();
 
 		public TimeLogHashService(ISystemClock systemClock) => _systemClock = systemClock;
 
-		public void SetTimeOut(int timeoutMinutes) => _hashLiveTime = timeoutMinutes;
-
-		public void Update(Guid userId, DateTime startDate)
+		public void UpdateNew(Guid userId, DateTime startDate)
 		{
 			DateTime endDateTime = _systemClock.Now;
 
@@ -29,27 +26,18 @@ namespace Service.TimeLogger.Services
 			record.EndDateTime = endDateTime;
 		}
 
-		public TimeLogHashRecord[] CutExpired()
+		public TimeLogHashRecord[] GetExpired()
 		{
-			KeyValuePair<Guid, TimeLogHashRecord>[] pairs = Dictionary
-				.Where(pair => pair.Value.StartDateTime.AddMinutes(_hashLiveTime) < _systemClock.Now)
+			int expiredMinutes = Program.ReloadedSettings(model => model.HashExpiresMinutes).Invoke();
+
+			KeyValuePair<Guid, TimeLogHashRecord>[] expiredPairs = Dictionary
+				.Where(pair => pair.Value.StartDateTime.AddMinutes(expiredMinutes) < _systemClock.Now)
 				.ToArray();
 
-			foreach (KeyValuePair<Guid, TimeLogHashRecord> pair in pairs)
+			foreach (KeyValuePair<Guid, TimeLogHashRecord> pair in expiredPairs)
 				Dictionary.TryRemove(pair);
 
-			return pairs.Select(pair => pair.Value).ToArray();
+			return expiredPairs.Select(pair => pair.Value).ToArray();
 		}
-
-		public TimeLogHashRecord[] CutAll()
-		{
-			TimeLogHashRecord[] pairs = Dictionary.Values.ToArray();
-
-			Dictionary.Clear();
-
-			return pairs;
-		}
-
-		public int Length() => Dictionary.Count;
 	}
 }
