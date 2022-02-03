@@ -23,9 +23,6 @@ namespace Service.TimeLogger.Settings
 		[YamlProperty("TimeLogger.KeyUserDayTime")]
 		public string KeyUserDayTime { get; set; }
 
-		[YamlProperty("TimeLogger.CheckHasDurationMinutes")]
-		public int CheckHasDurationMinutes { get; set; }
-
 		[YamlProperty("TimeLogger.HashExpiresMinutes")]
 		public int HashExpiresMinutes { get; set; }
 	}
