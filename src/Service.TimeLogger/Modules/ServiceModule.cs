@@ -9,7 +9,7 @@ namespace Service.TimeLogger.Modules
 	{
 		protected override void Load(ContainerBuilder builder)
 		{
-			builder.RegisterKeyValueClient(Program.Settings.ServerKeyValueServiceUrl);
+			builder.RegisterServerKeyValueClient(Program.Settings.ServerKeyValueServiceUrl);
 			builder.RegisterType<SystemClock>().AsImplementedInterfaces().SingleInstance();
 			builder.RegisterType<TimeLogHashService>().AsImplementedInterfaces().SingleInstance();
 		}

@@ -18,7 +18,7 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
     <PackageReference Include="MyJetWallet.Sdk.Service" Version="2.1.6" />
     <PackageReference Include="SimpleTrading.ServiceStatusReporterConnector" Version="1.0.9" />
-    <PackageReference Include="MyJetEducation.Service.ServerKeyValue.Client" Version="1.0.2" />
+    <PackageReference Include="MyJetEducation.Service.ServerKeyValue.Client" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>
