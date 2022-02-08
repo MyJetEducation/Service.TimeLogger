@@ -4,8 +4,4 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Service.TimeLogger.Grpc\Service.TimeLogger.Grpc.csproj" />
-  </ItemGroup>
-
 </Project>
