@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using Service.Core.Client.Education;
+using Service.Education.Structure;
 
 namespace Service.TimeLogger.Grpc.Models
 {
