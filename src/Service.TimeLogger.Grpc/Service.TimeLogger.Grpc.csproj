@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference PrivateAssets="All" Include="MyJetEducation.Service.Core.Client" Version="1.0.29" />
-    <PackageReference Include="MyJetEducation.Service.Education" Version="1.0.0">
+    <PackageReference Include="MyJetEducation.Service.Education" Version="1.0.1">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference PrivateAssets="All" Include="MyJetWallet.Sdk.Grpc" Version="2.0.0" />
