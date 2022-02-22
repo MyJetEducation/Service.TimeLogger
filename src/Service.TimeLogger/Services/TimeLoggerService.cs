@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Service.Core.Client.Extensions;
 using Service.Core.Client.Models;
+using Service.Grpc;
 using Service.ServerKeyValue.Grpc;
 using Service.ServerKeyValue.Grpc.Models;
 using Service.TimeLogger.Domain.Models;
@@ -22,10 +23,10 @@ namespace Service.TimeLogger.Services
 		private static Func<string> KeyUserDayTime => Program.ReloadedSettings(model => model.KeyUserDayTime);
 
 		private readonly ILogger<TimeLoggerService> _logger;
-		private readonly IServerKeyValueService _serverKeyValueService;
+		private readonly IGrpcServiceProxy<IServerKeyValueService> _serverKeyValueService;
 		private readonly ITimeLogHashService _timeLogHashService;
 
-		public TimeLoggerService(ILogger<TimeLoggerService> logger, IServerKeyValueService serverKeyValueService, ITimeLogHashService timeLogHashService)
+		public TimeLoggerService(ILogger<TimeLoggerService> logger, IGrpcServiceProxy<IServerKeyValueService> serverKeyValueService, ITimeLogHashService timeLogHashService)
 		{
 			_logger = logger;
 			_serverKeyValueService = serverKeyValueService;
@@ -98,7 +99,7 @@ namespace Service.TimeLogger.Services
 
 		private async Task<ItemsGrpcResponse> GetData(Guid? userId)
 		{
-			ItemsGrpcResponse response = await _serverKeyValueService.Get(new ItemsGetGrpcRequest
+			ItemsGrpcResponse response = await _serverKeyValueService.Service.Get(new ItemsGetGrpcRequest
 			{
 				UserId = userId,
 				Keys = new[]
@@ -116,7 +117,7 @@ namespace Service.TimeLogger.Services
 
 		private async Task SetData(Guid? userId, TimeLogDto timeDto, DayTimeLogDto dayTimeDto)
 		{
-			CommonGrpcResponse response = await _serverKeyValueService.Put(new ItemsPutGrpcRequest
+			CommonGrpcResponse response = await _serverKeyValueService.TryCall(service => service.Put(new ItemsPutGrpcRequest
 			{
 				UserId = userId,
 				Items = new[]
@@ -132,7 +133,7 @@ namespace Service.TimeLogger.Services
 						Value = JsonSerializer.Serialize(dayTimeDto)
 					}
 				}
-			});
+			}));
 
 			if (response?.IsSuccess != true)
 				_logger.LogError("Can't set server key values for user {user}", userId);
