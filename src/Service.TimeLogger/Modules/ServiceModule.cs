@@ -14,6 +14,7 @@ namespace Service.TimeLogger.Modules
 
 			builder.RegisterType<SystemClock>().AsImplementedInterfaces().SingleInstance();
 			builder.RegisterType<TimeLogHashService>().AsImplementedInterfaces().SingleInstance();
+			builder.RegisterType<DtoRepository>().AsImplementedInterfaces().SingleInstance();
 		}
 	}
 }

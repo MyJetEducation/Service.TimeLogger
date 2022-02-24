@@ -1,4 +1,5 @@
 ﻿using System.ServiceModel;
+using System.Threading.Tasks;
 using Service.TimeLogger.Grpc.Models;
 
 namespace Service.TimeLogger.Grpc
@@ -8,5 +9,8 @@ namespace Service.TimeLogger.Grpc
 	{
 		[OperationContract]
 		void ProcessRequests(TimeLogGrpcRequest[] requests);
+
+		[OperationContract]
+		ValueTask<ServiceTimeResponse> GetUserTime(GetServiceTimeRequest request);
 	}
 }
