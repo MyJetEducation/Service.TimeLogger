@@ -7,6 +7,6 @@ namespace Service.TimeLogger.Grpc.Models
 	public class GetServiceTimeRequest
 	{
 		[DataMember(Order = 1)]
-		public Guid UserId { get; set; }
+		public Guid? UserId { get; set; }
 	}
 }
