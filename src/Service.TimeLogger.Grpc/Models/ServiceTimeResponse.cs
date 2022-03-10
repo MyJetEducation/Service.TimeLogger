@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Service.TimeLogger.Grpc.Models
 {
@@ -6,6 +7,6 @@ namespace Service.TimeLogger.Grpc.Models
 	public class ServiceTimeResponse
 	{
 		[DataMember(Order = 1)]
-		public int? Days { get; set; }
+		public TimeSpan? Interval { get; set; }
 	}
 }

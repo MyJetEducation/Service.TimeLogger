@@ -48,7 +48,7 @@ namespace Service.TimeLogger.Services
 
 				var timeDto = GetDto<TimeLogDto>(Program.ReloadedSettings(model => model.KeyUserTime), existingGrpcModels);
 
-				result.Days = timeDto?.Value.Days;
+				result.Interval = timeDto?.Value;
 			}
 			
 			return result;
