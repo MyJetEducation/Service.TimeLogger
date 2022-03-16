@@ -25,5 +25,8 @@ namespace Service.TimeLogger.Settings
 
 		[YamlProperty("TimeLogger.HashExpiresMinutes")]
 		public int HashExpiresMinutes { get; set; }
+
+		[YamlProperty("TimeLogger.ServiceBusWriter")]
+		public string ServiceBusWriter { get; set; }
 	}
 }
