@@ -5,7 +5,7 @@ namespace Service.TimeLogger.Services
 {
 	public interface ITimeLogHashService
 	{
-		void UpdateNew(Guid userId, DateTime startDate);
+		void UpdateNew(string userId, DateTime startDate);
 
 		TimeLogHashRecord[] GetExpired();
 	}

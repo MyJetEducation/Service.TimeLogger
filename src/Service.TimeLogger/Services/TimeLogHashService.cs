@@ -11,13 +11,13 @@ namespace Service.TimeLogger.Services
 	{
 		private readonly ISystemClock _systemClock;
 
-		private static readonly ConcurrentDictionary<Guid, TimeLogHashRecord> Dictionary;
+		private static readonly ConcurrentDictionary<string, TimeLogHashRecord> Dictionary;
 
-		static TimeLogHashService() => Dictionary = new ConcurrentDictionary<Guid, TimeLogHashRecord>();
+		static TimeLogHashService() => Dictionary = new ConcurrentDictionary<string, TimeLogHashRecord>();
 
 		public TimeLogHashService(ISystemClock systemClock) => _systemClock = systemClock;
 
-		public void UpdateNew(Guid userId, DateTime startDate)
+		public void UpdateNew(string userId, DateTime startDate)
 		{
 			DateTime endDateTime = _systemClock.Now;
 
@@ -30,11 +30,11 @@ namespace Service.TimeLogger.Services
 		{
 			int expiredMinutes = Program.ReloadedSettings(model => model.HashExpiresMinutes).Invoke();
 
-			KeyValuePair<Guid, TimeLogHashRecord>[] expiredPairs = Dictionary
+			KeyValuePair<string, TimeLogHashRecord>[] expiredPairs = Dictionary
 				.Where(pair => pair.Value.StartDateTime.AddMinutes(expiredMinutes) < _systemClock.Now)
 				.ToArray();
 
-			foreach (KeyValuePair<Guid, TimeLogHashRecord> pair in expiredPairs)
+			foreach (KeyValuePair<string, TimeLogHashRecord> pair in expiredPairs)
 				Dictionary.TryRemove(pair);
 
 			return expiredPairs.Select(pair => pair.Value).ToArray();

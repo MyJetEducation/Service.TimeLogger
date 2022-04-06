@@ -4,13 +4,13 @@ namespace Service.TimeLogger.Models
 {
 	public class TimeLogHashRecord
 	{
-		public TimeLogHashRecord(Guid userId, DateTime startDateTime)
+		public TimeLogHashRecord(string userId, DateTime startDateTime)
 		{
 			UserId = userId;
 			StartDateTime = startDateTime;
 		}
 
-		public Guid UserId { get; set; }
+		public string UserId { get; set; }
 
 		public DateTime StartDateTime { get; set; }
 

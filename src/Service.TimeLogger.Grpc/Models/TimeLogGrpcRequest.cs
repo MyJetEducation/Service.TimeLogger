@@ -7,7 +7,7 @@ namespace Service.TimeLogger.Grpc.Models
     public class TimeLogGrpcRequest
     {
         [DataMember(Order = 1)]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
         [DataMember(Order = 2)]
         public DateTime StartDate { get; set; }

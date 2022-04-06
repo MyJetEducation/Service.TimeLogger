@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MyJetWallet.Sdk.ServiceBus;
-using Newtonsoft.Json;
 using Service.Core.Client.Extensions;
 using Service.ServerKeyValue.Grpc.Models;
 using Service.ServiceBus.Models;
@@ -12,7 +12,6 @@ using Service.TimeLogger.Domain.Models;
 using Service.TimeLogger.Grpc;
 using Service.TimeLogger.Grpc.Models;
 using Service.TimeLogger.Models;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Service.TimeLogger.Services
 {
@@ -44,7 +43,7 @@ namespace Service.TimeLogger.Services
 
 		public async ValueTask<ServiceTimeResponse> GetUserTime(GetServiceTimeRequest request)
 		{
-			Guid? userId = request.UserId;
+			string userId = request.UserId;
 
 			var result = new ServiceTimeResponse();
 
@@ -71,7 +70,7 @@ namespace Service.TimeLogger.Services
 
 			foreach (TimeLogHashRecord info in hashRecords)
 			{
-				Guid? userId = info.UserId;
+				string userId = info.UserId;
 
 				ItemsGrpcResponse response = await _dtoRepository.GetTime(userId);
 				if (response == null)
@@ -88,7 +87,7 @@ namespace Service.TimeLogger.Services
 			}
 		}
 
-		private async Task Save(Guid? userId, TimeLogDto timeDto, DayTimeLogDto dayTimeDto)
+		private async Task Save(string userId, TimeLogDto timeDto, DayTimeLogDto dayTimeDto)
 		{
 			_logger.LogDebug("Update timeDto: {@dto}, dayTimeDto: {@dayTimeDto}", timeDto, dayTimeDto);
 
