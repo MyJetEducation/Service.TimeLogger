@@ -24,7 +24,7 @@ namespace Service.TimeLogger.Services
 			_logger = logger;
 		}
 
-		public async ValueTask<ItemsGrpcResponse> GetTime(Guid? userId)
+		public async ValueTask<ItemsGrpcResponse> GetTime(string userId)
 		{
 			ItemsGrpcResponse response = await _serverKeyValueService.Service.Get(new ItemsGetGrpcRequest
 			{
@@ -42,7 +42,7 @@ namespace Service.TimeLogger.Services
 			return response;
 		}
 
-		public async Task SetTime(Guid? userId, TimeLogDto timeDto, DayTimeLogDto dayTimeDto)
+		public async Task SetTime(string userId, TimeLogDto timeDto, DayTimeLogDto dayTimeDto)
 		{
 			CommonGrpcResponse response = await _serverKeyValueService.TryCall(service => service.Put(new ItemsPutGrpcRequest
 			{
