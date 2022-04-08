@@ -62,7 +62,7 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
         path: ./publish-api
         registry: ${{ secrets.REGISTRY_HOST }}
-        repository: ${{ secrets.REGISTRY_HOST }}/myjeteducation/${{ steps.string.outputs.lowercase }}
+        repository: myjeteducation/${{ steps.string.outputs.lowercase }}
         tags: ${{ steps.branches.outputs.value }}
         build_args: app_version=${{ steps.string.outputs.lowercase }}:${{ steps.branches.outputs.value }},app_compilation_date=${{ steps.current-time.outputs.formattedTime }}
 
