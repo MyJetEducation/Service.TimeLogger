@@ -20,10 +20,10 @@
     <PackageReference Include="SimpleTrading.ServiceStatusReporterConnector" Version="1.0.9" />
     <PackageReference Include="MyJetEducation.Service.ServerKeyValue.Client" Version="1.0.13" />
     <PackageReference Include="MyJetWallet.Sdk.Grpc" Version="2.0.0" />
-    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.35" />
+    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.36" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.9.0" />
     <PackageReference Include="MyJetEducation.Service.Grpc" Version="1.0.7" />
-    <PackageReference Include="MyJetEducation.Service.ServiceBus" Version="1.0.28" />
+    <PackageReference Include="MyJetEducation.Service.ServiceBus" Version="1.0.29" />
     <PackageReference Include="MyJetWallet.Sdk.ServiceBus" Version="2.2.2" />
   </ItemGroup>
 
