@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.3.0" />
-    <PackageReference Include="MyJetWallet.Sdk.Service" Version="2.2.2" />
+    <PackageReference Include="MyJetWallet.Sdk.Service" Version="2.2.3" />
     <PackageReference Include="SimpleTrading.ServiceStatusReporterConnector" Version="1.0.9" />
     <PackageReference Include="MyJetEducation.Service.ServerKeyValue.Client" Version="1.0.13" />
     <PackageReference Include="MyJetWallet.Sdk.Grpc" Version="2.0.0" />
